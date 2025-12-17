@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keynes vs. Hayek – Zitate zuordnen</title>
+</head> 
+<body>
+<!--Inhalt der Seite-->
+    <h1>Keynes oder Hayek?</h1>
+    <p>Ordne das Zitat der richtigen Person zu.</p>
+    <div class="score" id="score"></div>
+
+<!--Zitate -->
+    <div class="card">
+        <div class="quote-en" id="quoteEn"></div>
+        <div class="quote-de" id="quoteDe"></div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+<!--Antwortbuttons-->
+    <div class="buttons">
+        <button class="keynes" onclick="checkAnswer('Keynes')">Keynes</button>
+        <button class="hayek" onclick="checkAnswer('Hayek')">Hayek</button>
+    </div>
+
+    <button class="next" onclick="nextQuote()">Nächstes Zitat</button>
+
+    <div class = "restart">
+        <button onclick="restart()">Neu starten</button>
+    </div>
+
+<style>
+/* Allgemeines Design der Seite */
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f0f4f8;
+        margin: 0;
+        padding: 10px;
+        text-align: center;
+        background-image: url('https://t3.ftcdn.net/jpg/18/06/51/38/240_F_1806513866_tqdf3ND3rYhwl9DW0fMHRorOXRx9cCKh.jpg');
+        background-size: cover;
+        background-color: rgba(10, 0, 0, 0.225);
+    }
+
+
+
+    h1 {
+        margin-top:auto;
+        margin-bottom: 10px;
+        font-size: 3em;
+    }
+
+    p {
+        max-width: 700px;
+        margin: 0 auto 20px auto;
+        color: #333;
+    }
+
+    .card {
+        position: relative;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        max-width: 700px;
+        margin: 0 auto 20px auto;
+        min-width: 300px;
+        min-height: 100px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .quote-en {
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+
+    .quote-de {
+        font-size: 1.5em;
+        color: #555;
+        font-style: italic;
+    }
+
+    .feedback {
+        min-height: 30px;     
+        margin-top: 15px;
+        font-weight: bold;
+        text-align: center;
+    }  
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    /* Buttons mit Hintergrundbild und Animation */
+    button {
+        width: 320px;
+        height: 220px;
+        font-size: 1.6em;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+        text-shadow: 1px 1px 4px #000;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        background-size: cover;
+        background-position: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    }
+
+    button:hover{
+        transform: scale(1.05);   
+        filter: brightness(1.15);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+    }
+    button:active {
+        transform: scale(0.95);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    /* Individuelle Buttons */
+    .keynes {
+        background-image: url('https://makronom.de/wp-content/uploads/2024/06/John-Maynard-Keynes_Biografie.jpg');
+    }
+
+    .hayek {
+        background-image: url('https://www.eucken.de/app/webp-express/webp-images/uploads/walter-eucken-institut-von-hayek-medaille.jpg.webp');
+    }
+
+    .next {
+        background-image: url('https://i.ytimg.com/vi/5NIyCJC9ehQ/maxresdefault.jpg');
+        color: white;
+    }
+    .restart button {
+        width: 150px;
+        height: 50px;
+        font-size: 1em;
+        background: #6c757d;
+        color: white;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        margin-top: 30px;
+    }
+    .score {
+        font-size: 1.4em;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #111827;
+    }
+</style>
+
+<script>
+ // JavaScript-Code für die Zitatezuordnung  
+    const quotes = [
+        {en:"Boost aggregate demand!", de:"Erhöhe die gesamtwirtschaftliche Nachfrage!", author:"Keynes"},
+        {en:"Deficits could be the cure", de:"Schulden könnten die Heilung sein", author:"Keynes"},
+        {en:"Business is driven by the animal spirits.", de:"Die Wirtschaft wird von menschlichen Instinkten angetrieben.", author:"Keynes"},
+        {en:"Waiting for recovery? Seriously? That’s outrageous!", de:"Auf Erholung warten? Im Ernst? Das ist unerhört!", author:"Keynes"},
+        {en:"We need more government spending, now it’s stimulus season", de:"wir brauchen mehr Staatsausgaben, dann ist Anschub-Saison.", author:"Keynes"},
+        {en:"The place you should study isn’t the bust – it’s the boom.", de:"Nicht die Krise ist entscheidend, sondern der Boom davor.", author:"Hayek"},
+        {en:"Real savings come first if you want to invest", de:"Du musst erst sparen, wenn du investieren willst.", author:"Hayek"},
+        {en:"Malinvestments wreck the economy.", de:"Fehlinvestitionen zerstören die Wirtschaft.", author:"Hayek"},
+        {en:"The boom plants the seeds for its future destruction", de:"Der Boom setzt die Wurzeln für seine zukünftige Zerstörung", author:"Hayek"},
+        {en:"His theory ignores human action and motivation", de:"Seine Theorie ignoriert menschliche Handlung und Motivation", author:"Hayek"},
+        {en:"Your so-called stimulus will make things even worse.", de:"Dein sogenanntes Konjunkturprogramm macht alles schlimmer.", author:"Hayek"},
+        
+    ];
+// Zufällige Anordnung der Zitate
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    shuffle(quotes);
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+// Laden des aktuellen Zitats
+    function loadQuote() {
+        document.getElementById("quoteEn").innerText = quotes[currentIndex].en;
+        document.getElementById("quoteDe").innerText = quotes[currentIndex].de;
+        document.getElementById("feedback").innerText = "";
+        answered = false;
+    }
+// Überprüfen der Antwort
+    function checkAnswer(choice) {
+
+        if (answered) return;   //  schon beantwortet → nichts tun
+
+        const correct = quotes[currentIndex].author;
+        answered = true;        
+
+        if (choice === correct) {
+            score++;
+            document.getElementById("feedback").innerText = "✔ Richtig!";
+        } else {
+            document.getElementById("feedback").innerText =
+                "✘ Falsch – das Zitat stammt von " + correct + ".";
+        }
+
+        updateScore();
+    }
+// Zum nächsten Zitat wechseln
+    function nextQuote() {
+        currentIndex++;
+
+        if (currentIndex >= quotes.length) {
+            document.getElementById("quoteEn").innerText = "Fertig!";
+            document.getElementById("quoteDe").innerText = "Alle Zitate wurden gezeigt.";
+            document.getElementById("feedback").innerText = "";
+            return;
+        }
+
+        loadQuote();
+    }
+
+// Punktestand aktualisieren
+    function updateScore() {
+        document.getElementById("score").innerText =
+            "Punkte: " + score + " / " + quotes.length;
+    }
+
+// Spiel neu starten
+    function restart() {
+        shuffle(quotes);
+        currentIndex = 0;
+        score = 0;
+        answered = false;
+        updateScore();
+        loadQuote();
+    }
+
+    loadQuote();
+    updateScore();
+    </script>
+
+</body>
+</html>
